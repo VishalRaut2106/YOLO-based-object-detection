@@ -35,6 +35,26 @@ python enhanced_detection_system.py -c ../yolov3.cfg -w ../yolov3.weights -cl ..
 - 🧵 **Multi-threaded**: Smooth, non-blocking architecture
 - 💾 **Memory Efficient**: <2GB usage
 
+## 🧠 How It Works (Project Flow)
+
+This project leverages the **YOLO (You Only Look Once)** deep learning architecture via OpenCV's `dnn` (Deep Neural Network) module. Here is a breakdown of how the detection pipeline works from start to finish:
+
+### 1. The YOLO Architecture
+Unlike traditional object detectors that scan an image multiple times (using sliding windows or region proposals), YOLO looks at the entire image **only once**. It divides the input image into an *S × S grid*. If the center of an object falls into a specific grid cell, that cell is responsible for detecting the object. 
+
+### 2. The Project Pipeline (Flow)
+- **Input Processing**: A frame from your camera (or a static image) is captured and preprocessed. OpenCV's `blobFromImage` converts this frame into a standardized "blob" (e.g., resizing it to 416x416 pixels, scaling pixel values, and swapping Red/Blue channels).
+- **Single Forward Pass**: This blob is fed into the loaded YOLO neural network (`yolov3.weights` and `yolov3.cfg`). The network processes the entire image simultaneously.
+- **Bounding Box Prediction**: The network predicts multiple bounding boxes and class probabilities for each grid cell.
+- **Confidence Thresholding**: Predictions with low confidence (e.g., below 50%) are instantly discarded to filter out noise.
+- **Non-Maximum Suppression (NMS)**: Because YOLO might predict multiple overlapping bounding boxes for the exact same object, NMS is applied to keep only the most accurate box.
+- **Output Rendering**: Bounding boxes, class names, and confidence scores are drawn onto the original image, which is then displayed to the user in real-time.
+
+### 🤔 Why Use YOLO?
+- **Extreme Speed**: Because it treats detection as a single regression problem, YOLO is inherently faster than multi-stage detectors like Faster R-CNN, making it perfect for **real-time video processing**.
+- **Global Context**: YOLO sees the entire image during training and testing, which means it encodes contextual information about classes. This drastically reduces "background errors" (predicting objects where there is only background).
+- **Generalization**: YOLO learns highly generalizable representations of objects, making it robust when deployed in real-world, unpredictable environments.
+
 ## 🎮 Keyboard Controls
 
 | Key | Action |
@@ -55,7 +75,7 @@ YOLO v3 detects these objects:
 - Kitchen items (bottle, cup, fork, knife, bowl)
 - And 60+ more common objects
 
-**Note**: YOLO cannot detect glasses, headphones, pens, watches, etc. For unlimited object detection, see the `experimental_detectors` folder.
+**Note**: YOLO cannot detect objects outside of these 80 categories (e.g., glasses, headphones, pens, watches).
 
 ## ⚙️ Configuration
 
@@ -132,22 +152,6 @@ Expected output: `✓ All tests passed!`
 - **IMPLEMENTATION_SUMMARY.md** - What was built
 - **SETUP_AI_DESCRIPTIONS.md** - Enable AI descriptions
 - **config_examples.json** - Example configurations
-
-## 🆚 Comparison with Other Detectors
-
-| Feature | Enhanced YOLO | Gemini API | Ollama Vision |
-|---------|---------------|------------|---------------|
-| Speed | ⚡ Fast (15+ FPS) | 🐢 Slow (~1 FPS) | 🐢 Slow (~0.2 FPS) |
-| Objects | 80 classes | Everything | Everything |
-| API Key | Optional | Required | Not needed |
-| Internet | No | Yes | No |
-| Glasses/Headphones | ❌ No | ✅ Yes | ✅ Yes |
-
-## 🔮 For Universal Detection
-
-If you need to detect objects not in YOLO's 80 classes (glasses, headphones, pens, etc.), check out the **experimental_detectors** folder for:
-- Gemini-based universal detector
-- Ollama vision-based local detector
 
 ## 📝 License
 
