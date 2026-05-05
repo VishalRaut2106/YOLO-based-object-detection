@@ -156,4 +156,4 @@ See LICENSE file.
 
 - YOLO (You Only Look Once) by Joseph Redmon
 - OpenCV DNN module
-- Original implementation by Arun Ponnusamy
+- Enhanced implementation by Vishal Devidas Raut
