@@ -10,19 +10,14 @@ pip install -r requirements.txt
 ```
 
 ### 2. Download YOLO Weights
-```bash
-# Go back to parent directory where YOLO files are
-cd ..
-```
-
-Make sure you have:
+Make sure you have downloaded the following files to this folder:
 - `yolov3.cfg`
 - `yolov3.weights`
 - `yolov3.txt`
 
 ### 3. Run the System
 ```bash
-python enhanced_detection_system.py -c ../yolov3.cfg -w ../yolov3.weights -cl ../yolov3.txt
+python enhanced_detection_system.py -c yolov3.cfg -w yolov3.weights -cl yolov3.txt
 ```
 
 ## ✨ Features
@@ -122,8 +117,8 @@ Edit `config.json` to customize:
 
 ## 📁 Project Structure
 
-```
-enhanced_yolo_system/
+```text
+YOLO-based-object-detection/
 ├── enhanced_detection_system.py  # Main application
 ├── config_manager.py             # Configuration management
 ├── data_models.py                # Data structures
@@ -155,7 +150,7 @@ Expected output: `✓ All tests passed!`
 
 ## 📝 License
 
-See LICENSE file in parent directory.
+See LICENSE file.
 
 ## 🙏 Acknowledgments
 
