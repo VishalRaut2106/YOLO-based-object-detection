@@ -1,257 +1,164 @@
-# Object Detection Project
+# Enhanced YOLO Detection System
 
-Complete object detection system with multiple implementations for different use cases.
+High-performance real-time object detection with optimized YOLO inference, AI-powered descriptions, and comprehensive performance monitoring.
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Download YOLO Weights
+```bash
+# Go back to parent directory where YOLO files are
+cd ..
+```
+
+Make sure you have:
+- `yolov3.cfg`
+- `yolov3.weights`
+- `yolov3.txt`
+
+### 3. Run the System
+```bash
+python enhanced_detection_system.py -c ../yolov3.cfg -w ../yolov3.weights -cl ../yolov3.txt
+```
+
+## ✨ Features
+
+- ⚡ **Fast Detection**: 15+ FPS on CPU (4+ cores)
+- 📸 **Snapshot Capture**: Press 'S' to save frames
+- 🤖 **AI Descriptions**: Automatic scene descriptions (with API key)
+- 📊 **Performance Monitoring**: Real-time FPS, latency, memory tracking
+- ⚙️ **Configurable**: Adjust thresholds, resolution, backend
+- 🧵 **Multi-threaded**: Smooth, non-blocking architecture
+- 💾 **Memory Efficient**: <2GB usage
+
+## 🧠 How It Works (Project Flow)
+
+This project leverages the **YOLO (You Only Look Once)** deep learning architecture via OpenCV's `dnn` (Deep Neural Network) module. Here is a breakdown of how the detection pipeline works from start to finish:
+
+### 1. The YOLO Architecture
+Unlike traditional object detectors that scan an image multiple times (using sliding windows or region proposals), YOLO looks at the entire image **only once**. It divides the input image into an *S × S grid*. If the center of an object falls into a specific grid cell, that cell is responsible for detecting the object. 
+
+### 2. The Project Pipeline (Flow)
+- **Input Processing**: A frame from your camera (or a static image) is captured and preprocessed. OpenCV's `blobFromImage` converts this frame into a standardized "blob" (e.g., resizing it to 416x416 pixels, scaling pixel values, and swapping Red/Blue channels).
+- **Single Forward Pass**: This blob is fed into the loaded YOLO neural network (`yolov3.weights` and `yolov3.cfg`). The network processes the entire image simultaneously.
+- **Bounding Box Prediction**: The network predicts multiple bounding boxes and class probabilities for each grid cell.
+- **Confidence Thresholding**: Predictions with low confidence (e.g., below 50%) are instantly discarded to filter out noise.
+- **Non-Maximum Suppression (NMS)**: Because YOLO might predict multiple overlapping bounding boxes for the exact same object, NMS is applied to keep only the most accurate box.
+- **Output Rendering**: Bounding boxes, class names, and confidence scores are drawn onto the original image, which is then displayed to the user in real-time.
+
+### 🤔 Why Use YOLO?
+- **Extreme Speed**: Because it treats detection as a single regression problem, YOLO is inherently faster than multi-stage detectors like Faster R-CNN, making it perfect for **real-time video processing**.
+- **Global Context**: YOLO sees the entire image during training and testing, which means it encodes contextual information about classes. This drastically reduces "background errors" (predicting objects where there is only background).
+- **Generalization**: YOLO learns highly generalizable representations of objects, making it robust when deployed in real-world, unpredictable environments.
+
+## 🎮 Keyboard Controls
+
+| Key | Action |
+|-----|--------|
+| **S** | Capture snapshot + generate AI description |
+| **D** | Toggle description panel |
+| **H** | Show help overlay |
+| **P** | Pause/Resume detection |
+| **Q** | Quit application |
+
+## 📋 What YOLO Can Detect (80 Classes)
+
+YOLO v3 detects these objects:
+- People, vehicles (car, truck, bus, motorcycle, bicycle)
+- Animals (dog, cat, bird, horse, etc.)
+- Furniture (chair, couch, bed, table)
+- Electronics (laptop, mouse, keyboard, cell phone, TV)
+- Kitchen items (bottle, cup, fork, knife, bowl)
+- And 60+ more common objects
+
+**Note**: YOLO cannot detect objects outside of these 80 categories (e.g., glasses, headphones, pens, watches).
+
+## ⚙️ Configuration
+
+Edit `config.json` to customize:
+
+```json
+{
+  "detection": {
+    "confidence_threshold": 0.5,
+    "nms_threshold": 0.4,
+    "input_resolution": 416
+  },
+  "performance": {
+    "frame_queue_size": 3,
+    "enable_profiling": false
+  },
+  "snapshot": {
+    "directory": "snapshots",
+    "jpeg_quality": 85
+  }
+}
+```
+
+## 🔧 Performance Tuning
+
+### For Faster Processing (CPU)
+```json
+{
+  "detection": {
+    "input_resolution": 320
+  }
+}
+```
+
+### For Better Accuracy
+```json
+{
+  "detection": {
+    "input_resolution": 608,
+    "confidence_threshold": 0.6
+  }
+}
+```
 
 ## 📁 Project Structure
 
 ```
-object-detection-opencv/
-├── enhanced_yolo_system/          # Main production system
-│   ├── enhanced_detection_system.py
-│   ├── config_manager.py
-│   ├── yolo_detector.py
-│   └── ... (optimized YOLO system)
-│
-├── experimental_detectors/        # Alternative detectors
-│   ├── gemini_camera.py          # Gemini API (unlimited objects)
-│   ├── ollama_universal_detector.py  # Local AI (unlimited objects)
-│   └── yolo_gemini_camera.py     # YOLO + descriptions
-│
-├── yolov3.cfg                     # YOLO configuration
-├── yolov3.weights                 # YOLO weights (download required)
-├── yolov3.txt                     # YOLO class names
-│
-└── Original examples:
-    ├── yolo_opencv.py             # Basic YOLO on images
-    └── yolo_opencv_camera.py      # Basic YOLO on camera
+enhanced_yolo_system/
+├── enhanced_detection_system.py  # Main application
+├── config_manager.py             # Configuration management
+├── data_models.py                # Data structures
+├── yolo_detector.py              # YOLO detection engine
+├── frame_pipeline.py             # Multi-threaded pipeline
+├── snapshot_manager.py           # Snapshot handling
+├── performance_monitor.py        # Performance tracking
+├── ai_description_generator.py   # AI descriptions
+├── config.json                   # Configuration file
+├── requirements.txt              # Dependencies
+└── snapshots/                    # Captured snapshots
 ```
 
-## 🚀 Quick Start
+## 🧪 Testing
 
-### Option 1: Enhanced YOLO System (Recommended)
-**Fast, optimized, production-ready**
-
+Run the test suite:
 ```bash
-cd enhanced_yolo_system
-pip install -r requirements.txt
-python enhanced_detection_system.py -c ../yolov3.cfg -w ../yolov3.weights -cl ../yolov3.txt
+python test_system.py
 ```
 
-**Features:**
-- ⚡ 15+ FPS real-time detection
-- 📸 Snapshot capture (press 'S')
-- 🤖 AI descriptions (optional)
-- 📊 Performance monitoring
-- ⚙️ Configurable parameters
-
-**Detects:** 80 common objects (person, car, laptop, phone, etc.)
-
----
-
-### Option 2: Ollama Universal Detector
-**Detects EVERYTHING - 100% local, no API key!**
-
-```bash
-# Setup Ollama first (one-time)
-# Download from: https://ollama.com/download
-ollama serve
-ollama pull llama3.2-vision:11b
-
-# Run detector
-cd experimental_detectors
-python ollama_universal_detector.py
-```
-
-**Features:**
-- ✅ Detects glasses, headphones, pens, watches, etc.
-- ✅ 100% local and private
-- ✅ No API keys or internet needed
-- ✅ Unlimited object types
-
-**Trade-off:** Slower (~2-5 seconds per detection)
-
----
-
-### Option 3: Gemini Universal Detector
-**Detects EVERYTHING - Cloud-based**
-
-```bash
-cd experimental_detectors
-python gemini_camera.py
-```
-
-**Features:**
-- ✅ Detects unlimited object types
-- ✅ Very accurate
-- ❌ Requires API key and internet
-
----
-
-## 🎯 Which One Should I Use?
-
-### For Fast General Detection
-→ **Enhanced YOLO System**
-- Best for: Real-time applications, common objects
-- Speed: ⚡⚡⚡ Very fast (15+ FPS)
-- Objects: 80 classes
-
-### For Detecting Glasses, Headphones, Pens, etc.
-→ **Ollama Universal Detector**
-- Best for: Unlimited object types, privacy
-- Speed: 🐢 Slow (~0.2 FPS)
-- Objects: Everything
-- Bonus: 100% local, no API key
-
-### For Maximum Accuracy
-→ **Gemini Universal Detector**
-- Best for: When you have API access
-- Speed: 🐢 Slow (~1 FPS)
-- Objects: Everything
-
----
-
-## 📊 Comparison
-
-| System | Speed | Objects | Setup | API Key | Internet |
-|--------|-------|---------|-------|---------|----------|
-| **Enhanced YOLO** | ⚡⚡⚡ Fast | 80 classes | Easy | Optional | No |
-| **Ollama** | 🐢 Slow | Everything | Medium | No | No |
-| **Gemini** | 🐢 Slow | Everything | Easy | Yes | Yes |
-
----
+Expected output: `✓ All tests passed!`
 
 ## 📚 Documentation
 
-### Enhanced YOLO System
-- `enhanced_yolo_system/README.md` - Main system docs
-- `enhanced_yolo_system/QUICKSTART.md` - 5-minute setup
-- `enhanced_yolo_system/IMPLEMENTATION_SUMMARY.md` - Technical details
-
-### Experimental Detectors
-- `experimental_detectors/README.md` - Alternative detectors
-- `experimental_detectors/SETUP_OLLAMA.md` - Ollama setup guide
-
----
-
-## 🎮 Keyboard Controls
-
-All systems support:
-- **S** - Capture snapshot
-- **Q** - Quit
-- **H** - Help (Enhanced YOLO only)
-- **P** - Pause/Resume (Enhanced YOLO only)
-
----
-
-## 📦 Installation
-
-### Prerequisites
-```bash
-pip install opencv-python numpy psutil
-```
-
-### For AI Descriptions (Optional)
-```bash
-pip install google-generativeai pillow
-```
-
-### For Ollama (Optional)
-Download from: https://ollama.com/download
-
----
-
-## 🔧 YOLO Weights
-
-Download YOLO v3 weights:
-```bash
-wget https://pjreddie.com/media/files/yolov3.weights
-```
-
-Or download manually from: https://pjreddie.com/media/files/yolov3.weights
-
----
-
-## 🎓 Original Examples
-
-Basic YOLO examples are still available:
-
-**Static Image Detection:**
-```bash
-python yolo_opencv.py --image dog.jpg --config yolov3.cfg --weights yolov3.weights --classes yolov3.txt
-```
-
-**Basic Camera Detection:**
-```bash
-python yolo_opencv_camera.py -c yolov3.cfg -w yolov3.weights -cl yolov3.txt
-```
-
----
-
-## 🆕 What's New
-
-### Enhanced YOLO System
-- Multi-threaded architecture for smooth performance
-- Real-time FPS and performance monitoring
-- Snapshot capture with AI descriptions
-- Configurable detection parameters
-- Memory optimization (<2GB usage)
-- GPU acceleration support
-
-### Experimental Detectors
-- Ollama vision model for unlimited local detection
-- Gemini API integration for cloud-based detection
-- Hybrid YOLO + AI description system
-
----
-
-## 🐛 Troubleshooting
-
-### Camera not opening
-```bash
-# Try different camera ID
-python enhanced_detection_system.py ... --camera 1
-```
-
-### Low FPS
-- Reduce resolution in config.json: `"input_resolution": 320`
-- Close other applications
-- Check if GPU acceleration is available
-
-### YOLO weights not found
-```bash
-wget https://pjreddie.com/media/files/yolov3.weights
-```
-
----
+- **QUICKSTART.md** - 5-minute setup guide
+- **IMPLEMENTATION_SUMMARY.md** - What was built
+- **SETUP_AI_DESCRIPTIONS.md** - Enable AI descriptions
+- **config_examples.json** - Example configurations
 
 ## 📝 License
 
-See LICENSE file for details.
+See LICENSE file in parent directory.
 
 ## 🙏 Acknowledgments
 
 - YOLO (You Only Look Once) by Joseph Redmon
 - OpenCV DNN module
-- Google Gemini API
-- Ollama local AI
 - Original implementation by Arun Ponnusamy
-
----
-
-## 🚀 Getting Started
-
-1. **For fast detection of common objects:**
-   ```bash
-   cd enhanced_yolo_system
-   python enhanced_detection_system.py -c ../yolov3.cfg -w ../yolov3.weights -cl ../yolov3.txt
-   ```
-
-2. **For detecting everything (glasses, headphones, etc.):**
-   ```bash
-   cd experimental_detectors
-   python ollama_universal_detector.py
-   ```
-
-Choose the system that fits your needs and start detecting! 🎯
-
-# YOLO-based-object-detection
