@@ -1,0 +1,6 @@
+*.weights
+__pycache__/
+*.pdf
+test_snapshots/
+snapshots/
+*.mp4

@@ -1,0 +1,106 @@
+{
+  "cpu_optimized": {
+    "description": "Optimized for CPU-only systems - faster processing with lower accuracy",
+    "detection": {
+      "confidence_threshold": 0.5,
+      "nms_threshold": 0.4,
+      "input_resolution": 320,
+      "backend": "opencv",
+      "target": "cpu"
+    },
+    "performance": {
+      "frame_queue_size": 2,
+      "enable_profiling": false,
+      "log_interval_seconds": 10
+    },
+    "snapshot": {
+      "directory": "snapshots",
+      "jpeg_quality": 85,
+      "include_bounding_boxes": true
+    }
+  },
+  
+  "gpu_optimized": {
+    "description": "Optimized for GPU systems - higher accuracy with CUDA acceleration",
+    "detection": {
+      "confidence_threshold": 0.5,
+      "nms_threshold": 0.4,
+      "input_resolution": 416,
+      "backend": "cuda",
+      "target": "cuda"
+    },
+    "performance": {
+      "frame_queue_size": 3,
+      "enable_profiling": false,
+      "log_interval_seconds": 10
+    },
+    "snapshot": {
+      "directory": "snapshots",
+      "jpeg_quality": 90,
+      "include_bounding_boxes": true
+    }
+  },
+  
+  "high_accuracy": {
+    "description": "Maximum accuracy mode - slower but more precise detections",
+    "detection": {
+      "confidence_threshold": 0.6,
+      "nms_threshold": 0.3,
+      "input_resolution": 608,
+      "backend": "opencv",
+      "target": "cpu"
+    },
+    "performance": {
+      "frame_queue_size": 3,
+      "enable_profiling": true,
+      "log_interval_seconds": 10
+    },
+    "snapshot": {
+      "directory": "snapshots",
+      "jpeg_quality": 95,
+      "include_bounding_boxes": true
+    }
+  },
+  
+  "low_memory": {
+    "description": "Optimized for systems with limited RAM",
+    "detection": {
+      "confidence_threshold": 0.5,
+      "nms_threshold": 0.4,
+      "input_resolution": 320,
+      "backend": "opencv",
+      "target": "cpu"
+    },
+    "performance": {
+      "frame_queue_size": 1,
+      "enable_profiling": false,
+      "log_interval_seconds": 30
+    },
+    "snapshot": {
+      "directory": "snapshots",
+      "jpeg_quality": 75,
+      "include_bounding_boxes": true
+    }
+  },
+  
+  "development": {
+    "description": "Development mode with profiling and detailed logging",
+    "detection": {
+      "confidence_threshold": 0.5,
+      "nms_threshold": 0.4,
+      "input_resolution": 416,
+      "backend": "opencv",
+      "target": "cpu"
+    },
+    "performance": {
+      "frame_queue_size": 3,
+      "enable_profiling": true,
+      "log_interval_seconds": 5
+    },
+    "snapshot": {
+      "directory": "snapshots",
+      "jpeg_quality": 85,
+      "include_bounding_boxes": true
+    }
+  }
+}
